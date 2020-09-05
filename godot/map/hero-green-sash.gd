@@ -36,16 +36,16 @@ func _currentPositionString():
 	return '(' + String(positionX) + ', ' + String(positionY) + ')'
 
 func _handleInput():
-	if (Input.is_key_pressed(KEY_LEFT)):
+	if (Input.is_action_just_pressed("ui_left")):
 		_moveLeft()
 
-	if (Input.is_key_pressed(KEY_RIGHT)):
+	if (Input.is_action_just_pressed("ui_right")):
 		_moveRight()
 
-	if (Input.is_key_pressed(KEY_UP)):
+	if (Input.is_action_just_pressed("ui_up")):
 		_moveUp()
 
-	if (Input.is_key_pressed(KEY_DOWN)):
+	if (Input.is_action_just_pressed("ui_down")):
 		_moveDown()
 
 func _moveDown():
