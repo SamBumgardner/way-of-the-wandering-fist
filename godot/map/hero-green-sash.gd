@@ -37,16 +37,20 @@ func _currentPositionString():
 
 func _handleInput():
 	if (Input.is_action_just_pressed("ui_left")):
-		_moveLeft()
+		#_moveLeft()
+		_moveDelta(-1, 0)
 
 	if (Input.is_action_just_pressed("ui_right")):
-		_moveRight()
+		# _moveRight()
+		_moveDelta(1, 0)
 
 	if (Input.is_action_just_pressed("ui_up")):
-		_moveUp()
+		# _moveUp()
+		_moveDelta(0, 1)
 
 	if (Input.is_action_just_pressed("ui_down")):
-		_moveDown()
+		# _moveDown()
+		_moveDelta(0, -1)
 
 func _moveDown():
 	var currentPositionY = positionY
@@ -83,3 +87,47 @@ func _moveUp():
 
 	if (OS.is_debug_build()):
 		print(HERO_NAME + ' moved up to ' + _currentPositionString())
+
+func _moveDelta(x, y):
+	# _moveDelta(1, 1) means to move diagonally North East.
+	var currentPositionX = x
+	var currentPositionY = y
+
+	positionX = (positionX + MAP_WIDTH + x) % MAP_WIDTH
+	positionY = (positionY + MAP_HEIGHT + y) % MAP_HEIGHT
+
+	var calculatedDeltaX = currentPositionX - positionX + MAP_WIDTH
+	var calculatedDeltaXPixel = calculatedDeltaX * MOVEMENT_DISTANCE_PIXEL
+
+	#var calculatedDeltaY = currentPositionY - positionY
+	var calculatedDeltaY = positionY - currentPositionY
+	var calculatedDeltaYPixel = calculatedDeltaY * MOVEMENT_DISTANCE_PIXEL
+	print(PoolStringArray([
+		'MDeltaY', y, positionY, calculatedDeltaY, calculatedDeltaYPixel
+	]))
+
+	if (x != 0):
+		move_local_x(calculatedDeltaXPixel)
+
+	if (y != 0):
+		move_local_y(calculatedDeltaYPixel)
+
+	if (OS.is_debug_build()):
+		print(HERO_NAME + ' moved ' + PoolStringArray(getDirectionList(x, y)).join(' and ') + ' to ' + _currentPositionString())
+
+func getDirectionList(x, y):
+	var directionList = []
+
+	if (x > 0):
+		directionList.push_back('right')
+
+	if (x < 0):
+		directionList.push_back('left')
+
+	if (y > 0):
+		directionList.push_back('up')
+
+	if (y < 0):
+		directionList.push_back('down')
+
+	return directionList
