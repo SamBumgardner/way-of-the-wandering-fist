@@ -37,85 +37,29 @@ func _currentPositionString():
 
 func _handleInput():
 	if (Input.is_action_just_pressed("ui_left")):
-		#_moveLeft()
-		_moveDelta(-1, 0)
+		_move(-1, 0)
 
 	if (Input.is_action_just_pressed("ui_right")):
-		# _moveRight()
-		_moveDelta(1, 0)
+		_move(1, 0)
 
 	if (Input.is_action_just_pressed("ui_up")):
-		# _moveUp()
-		_moveDelta(0, 1)
+		_move(0, -1)
 
 	if (Input.is_action_just_pressed("ui_down")):
-		# _moveDown()
-		_moveDelta(0, -1)
+		_move(0, 1)
 
-func _moveDown():
-	var currentPositionY = positionY
-
-	positionY = (positionY - 1 + MAP_HEIGHT) % MAP_HEIGHT
-	move_local_y((currentPositionY - positionY) * MOVEMENT_DISTANCE_PIXEL)
-
-	if (OS.is_debug_build()):
-		print(HERO_NAME + ' moved down to ' + _currentPositionString())
-
-func _moveLeft():
+func _move(deltaX, deltaY):
 	var currentPositionX = positionX
-
-	positionX = (positionX - 1 + MAP_WIDTH) % MAP_WIDTH
-	move_local_x((currentPositionX - positionX) * -MOVEMENT_DISTANCE_PIXEL)
-
-	if (OS.is_debug_build()):
-		print(HERO_NAME + ' moved left to ' + _currentPositionString())
-
-func _moveRight():
-	var currentPositionX = positionX
-
-	positionX = (positionX + 1) % MAP_WIDTH
-	move_local_x((currentPositionX - positionX) * -MOVEMENT_DISTANCE_PIXEL)
-
-	if (OS.is_debug_build()):
-		print(HERO_NAME + ' moved right to ' + _currentPositionString())
-
-func _moveUp():
 	var currentPositionY = positionY
-
-	positionY = (positionY + 1) % MAP_HEIGHT
-	move_local_y((currentPositionY - positionY) * MOVEMENT_DISTANCE_PIXEL)
-
+	positionX = (currentPositionX + deltaX + MAP_SQUARE_SIZE) % MAP_SQUARE_SIZE
+	positionY = (currentPositionY + deltaY + MAP_SQUARE_SIZE) % MAP_SQUARE_SIZE
+	move_local_x((positionX - currentPositionX) * MOVEMENT_DISTANCE_PIXEL)
+	move_local_y((positionY - currentPositionY) * MOVEMENT_DISTANCE_PIXEL)
+	
 	if (OS.is_debug_build()):
-		print(HERO_NAME + ' moved up to ' + _currentPositionString())
+		print(_getMovementDescription(deltaX, deltaY))
 
-func _moveDelta(x, y):
-	# _moveDelta(1, 1) means to move diagonally North East.
-	var currentPositionX = x
-	var currentPositionY = y
-
-	positionX = (positionX + MAP_WIDTH + x) % MAP_WIDTH
-	positionY = (positionY + MAP_HEIGHT + y) % MAP_HEIGHT
-
-	var calculatedDeltaX = currentPositionX - positionX + MAP_WIDTH
-	var calculatedDeltaXPixel = calculatedDeltaX * MOVEMENT_DISTANCE_PIXEL
-
-	#var calculatedDeltaY = currentPositionY - positionY
-	var calculatedDeltaY = positionY - currentPositionY
-	var calculatedDeltaYPixel = calculatedDeltaY * MOVEMENT_DISTANCE_PIXEL
-	print(PoolStringArray([
-		'MDeltaY', y, positionY, calculatedDeltaY, calculatedDeltaYPixel
-	]))
-
-	if (x != 0):
-		move_local_x(calculatedDeltaXPixel)
-
-	if (y != 0):
-		move_local_y(calculatedDeltaYPixel)
-
-	if (OS.is_debug_build()):
-		print(getMovementDescription(x, y))
-
-func getDirectionList(x, y):
+func _getDirectionList(x, y):
 	var directionList = []
 
 	if (x > 0):
@@ -125,23 +69,22 @@ func getDirectionList(x, y):
 		directionList.push_back('left')
 
 	if (y > 0):
-		directionList.push_back('up')
+		directionList.push_back('down')
 
 	if (y < 0):
-		directionList.push_back('down')
+		directionList.push_back('up')
 
 	return directionList
 
-func getMovementDescription(x, y):
+func _getMovementDescription(x, y):
 	var descriptionOfMoveDirection = PoolStringArray(
-		getDirectionList(x, y)
+		_getDirectionList(x, y)
 	).join(' and ')
-	var descriptionFull = (
-		HERO_NAME
-		+ ' moved '
-		+ descriptionOfMoveDirection
-		+ ' to '
-		+ _currentPositionString()
-	)
+	var descriptionFull = PoolStringArray([
+		HERO_NAME,
+		' moved ',
+		descriptionOfMoveDirection,
+		' to ',
+		_currentPositionString()
+	]).join('')
 	return descriptionFull
-	
