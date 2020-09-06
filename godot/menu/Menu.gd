@@ -35,22 +35,28 @@ func _getInputDirection():
 	return direction
 
 # Should be called by parent when the menu should be "reset" with new options.
-func updateOptions(newOptions):
-	for option in _menuOptions:
-		# do something to update options' displayed text
-		resetMenu()
+func updateOptions(newOptionTexts):
+	for i in _menuOptions.size():
+		_menuOptions[i].get_node("Label").text = newOptionTexts[i]
+	resetOptions()
 
-func resetMenu():
+func resetOptions():
 	for option in _menuOptions:
-		option.texture = _optionNormalTexture
+		option.get_node("Arrow").texture = _optionNormalTexture
 		_acceptingInput = true
 
 func _process(_delta):
+	# temp code for testing
+	if OS.is_debug_build() and Input.is_action_just_pressed("ui_accept"):
+		var randomText = str(randi())
+		updateOptions(["up " + randomText, "left " + randomText, 
+			"right " + randomText, "down " + randomText])
+	
 	var direction = _getInputDirection();
 	if _acceptingInput && direction != Direction.NONE:
 		if OS.is_debug_build():
 			print("Menu direction pressed: ", direction)
 		
-		_menuOptions[direction].texture = _optionHighlightTexture
+		_menuOptions[direction].get_node("Arrow").texture = _optionHighlightTexture
 		emit_signal("menuDirectionSelected", direction)
 		_acceptingInput = false
