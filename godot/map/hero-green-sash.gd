@@ -59,32 +59,23 @@ func _move(deltaX, deltaY):
 	if (OS.is_debug_build()):
 		print(_getMovementDescription(deltaX, deltaY))
 
-func _getDirectionList(x, y):
-	var directionList = []
+func _getOrthogonalDirection(deltaX, deltaY):
+	if (deltaX > 0):
+		return 'right'
+	elif (deltaX < 0):
+		return 'left'
+	elif (deltaY > 0):
+		return 'down'
+	elif (deltaY < 0):
+		return 'up'
+	else:
+		return ''
 
-	if (x > 0):
-		directionList.push_back('right')
-
-	if (x < 0):
-		directionList.push_back('left')
-
-	if (y > 0):
-		directionList.push_back('down')
-
-	if (y < 0):
-		directionList.push_back('up')
-
-	return directionList
-
-func _getMovementDescription(x, y):
-	var descriptionOfMoveDirection = PoolStringArray(
-		_getDirectionList(x, y)
-	).join(' and ')
-	var descriptionFull = PoolStringArray([
+func _getMovementDescription(deltaX, deltaY):
+	return PoolStringArray([
 		HERO_NAME,
 		' moved ',
-		descriptionOfMoveDirection,
+		_getOrthogonalDirection(deltaX, deltaY),
 		' to ',
 		_currentPositionString()
 	]).join('')
-	return descriptionFull
