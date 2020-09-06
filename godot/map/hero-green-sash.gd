@@ -113,7 +113,7 @@ func _moveDelta(x, y):
 		move_local_y(calculatedDeltaYPixel)
 
 	if (OS.is_debug_build()):
-		print(HERO_NAME + ' moved ' + PoolStringArray(getDirectionList(x, y)).join(' and ') + ' to ' + _currentPositionString())
+		print(getMovementDescription(x, y))
 
 func getDirectionList(x, y):
 	var directionList = []
@@ -131,3 +131,17 @@ func getDirectionList(x, y):
 		directionList.push_back('down')
 
 	return directionList
+
+func getMovementDescription(x, y):
+	var descriptionOfMoveDirection = PoolStringArray(
+		getDirectionList(x, y)
+	).join(' and ')
+	var descriptionFull = (
+		HERO_NAME
+		+ ' moved '
+		+ descriptionOfMoveDirection
+		+ ' to '
+		+ _currentPositionString()
+	)
+	return descriptionFull
+	
