@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/OptionNormal.png-0c257ef3d82fe086aa5ec3121d4265af.stex"
+path="res://.import/ArrowNormal.png-05cedf92cbfb1710453712d23e602c23.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://menu/OptionNormal.png"
-dest_files=[ "res://.import/OptionNormal.png-0c257ef3d82fe086aa5ec3121d4265af.stex" ]
+source_file="res://menu/ArrowNormal.png"
+dest_files=[ "res://.import/ArrowNormal.png-05cedf92cbfb1710453712d23e602c23.stex" ]
 
 [params]
 

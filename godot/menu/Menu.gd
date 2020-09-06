@@ -9,18 +9,30 @@ var _menuOptions = [0, 1, 2, 3]
 # Boolean for whether menu inputs should be accepted or not.
 var _acceptingInput = true
 
-# Hold preloaded texture for swapping option graphics when selected.
-var _optionHighlightTexture
-var _optionNormalTexture
+# Hold preloaded texture for swapping option arrow graphics when selected.
+var _arrowHighlightTexture
+var _arrowNormalTexture
 
 func _ready():
-	_optionHighlightTexture = preload("res://menu/OptionHighlight.png")
-	_optionNormalTexture = preload("res://menu/OptionNormal.png")
+	_arrowHighlightTexture = preload("res://menu/ArrowHighlight.png")
+	_arrowNormalTexture = preload("res://menu/ArrowNormal.png")
 	_menuOptions[Direction.UP] = $OptionUp
 	_menuOptions[Direction.LEFT] = $OptionLeft
 	_menuOptions[Direction.RIGHT] = $OptionRight
 	_menuOptions[Direction.DOWN] = $OptionDown
 
+# Should be called by parent when the menu should be "reset" with new options.
+func updateOptions(newOptionTexts):
+	for i in _menuOptions.size():
+		_menuOptions[i].get_node("Label").text = newOptionTexts[i]
+	resetOptions()
+
+func resetOptions():
+	for option in _menuOptions:
+		option.get_node("Arrow").texture = _arrowNormalTexture
+		_acceptingInput = true
+
+# Helper methods to handle input processing.
 func _getInputDirection():
 	var direction = Direction.NONE
 	if Input.is_action_just_pressed("ui_up"):
@@ -34,17 +46,12 @@ func _getInputDirection():
 	
 	return direction
 
-# Should be called by parent when the menu should be "reset" with new options.
-func updateOptions(newOptionTexts):
-	for i in _menuOptions.size():
-		_menuOptions[i].get_node("Label").text = newOptionTexts[i]
-	resetOptions()
+func _directionSelected(direction):
+	_menuOptions[direction].get_node("Arrow").texture = _arrowHighlightTexture
+	emit_signal("menuDirectionSelected", direction)
+	_acceptingInput = false
 
-func resetOptions():
-	for option in _menuOptions:
-		option.get_node("Arrow").texture = _optionNormalTexture
-		_acceptingInput = true
-
+# main update function
 func _process(_delta):
 	# temp code for testing
 	if OS.is_debug_build() and Input.is_action_just_pressed("ui_accept"):
@@ -55,8 +62,6 @@ func _process(_delta):
 	var direction = _getInputDirection();
 	if _acceptingInput && direction != Direction.NONE:
 		if OS.is_debug_build():
-			print("Menu direction pressed: ", direction)
+			print("Menu direction selected: ", direction)
 		
-		_menuOptions[direction].get_node("Arrow").texture = _optionHighlightTexture
-		emit_signal("menuDirectionSelected", direction)
-		_acceptingInput = false
+		_directionSelected(direction)
