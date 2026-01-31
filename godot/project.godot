@@ -6,19 +6,19 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
+config_version=5
 
-_global_script_classes=[  ]
-_global_script_class_icons={
+[animation]
 
-}
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
 config/name="Way of the Wandering Fist"
 run/main_scene="res://map/Node2DBattle.tscn"
+config/features=PackedStringArray("4.6")
 config/icon="res://icon.png"
 
 [rendering]
 
-environment/default_environment="res://default_env.tres"
+environment/defaults/default_environment="res://default_env.tres"

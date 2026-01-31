@@ -54,7 +54,7 @@ func _move(deltaX, deltaY):
 # Logging methods here.
 func _currentPositionString():
 	# Get string for logging coordinates
-	return '(' + String(positionX) + ', ' + String(positionY) + ')'
+	return '(' + str(positionX) + ', ' + str(positionY) + ')'
 
 func _getOrthogonalDirection(deltaX, deltaY):
 	# Get string for logging the orthogonal direction moved.
@@ -71,10 +71,10 @@ func _getOrthogonalDirection(deltaX, deltaY):
 
 func _getMovementDescription(characterName, deltaX, deltaY):
 	# Get string for logging where the character moved.
-	return PoolStringArray([
+	return ''.join([
 		characterName,
 		' moved ',
 		_getOrthogonalDirection(deltaX, deltaY),
 		' to ',
 		_currentPositionString()
-	]).join('')
+	])
